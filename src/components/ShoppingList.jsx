@@ -12,6 +12,7 @@ function ShoppingList() {
 
   const [editingId, setEditingId] = useState(null);
   const [editedValues, setEditedValues] = useState({ name: "", amount: "" });
+  const [errors, setErrors] = useState({ name: false, amount: false });
 
   const handleEdit = (id, name, amount) => {
     setEditingId(id);
@@ -19,9 +20,22 @@ function ShoppingList() {
   };
 
   const handleSave = (id) => {
-    if (editedValues.name && editedValues.amount) {
+    let valid = true;
+
+    if (!editedValues.name) {
+      setErrors((errors) => ({ ...errors, name: true }));
+      valid = false;
+    }
+
+    if (!editedValues.amount || isNaN(editedValues.amount)) {
+      setErrors((errors) => ({ ...errors, amount: true }));
+      valid = false;
+    }
+
+    if (valid) {
       dispatch(editProduct({ id, ...editedValues }));
       setEditingId(null);
+      setErrors({ name: false, amount: false });
     }
   };
 
@@ -38,18 +52,27 @@ function ShoppingList() {
                 <input
                   type="text"
                   value={editedValues.name}
-                  onChange={(e) =>
-                    setEditedValues({ ...editedValues, name: e.target.value })
-                  }
-                  className="border p-1 rounded"
+                  onChange={(e) => {
+                    setEditedValues({ ...editedValues, name: e.target.value });
+                    setErrors((errors) => ({ ...errors, name: false }));
+                  }}
+                  className={`border p-1 rounded ${
+                    errors.name ? "border-red-500" : ""
+                  }`}
                 />
                 <input
                   type="text"
                   value={editedValues.amount}
-                  onChange={(e) =>
-                    setEditedValues({ ...editedValues, amount: e.target.value })
-                  }
-                  className="border p-1 rounded"
+                  onChange={(e) => {
+                    setEditedValues({
+                      ...editedValues,
+                      amount: e.target.value,
+                    });
+                    setErrors((errors) => ({ ...errors, amount: false }));
+                  }}
+                  className={`border p-1 rounded ${
+                    errors.amount ? "border-red-500" : ""
+                  }`}
                 />
               </div>
             ) : (
