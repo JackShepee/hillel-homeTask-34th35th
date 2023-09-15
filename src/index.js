@@ -13,6 +13,10 @@ const store = configureStore({
     },
 });
 
+store.subscribe(() => {
+    localStorage.setItem('shoppingList', JSON.stringify(store.getState().shoppingList));
+});
+
 ReactDOM.render(
     <Provider store={store}>
         <App />

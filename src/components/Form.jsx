@@ -5,45 +5,67 @@ import { addProduct } from "../reducers/shoppingListSlice";
 function Form() {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
+  const [errors, setErrors] = useState({ name: false, amount: false });
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addProduct({ id: Date.now(), name, amount }));
-    setName("");
-    setAmount("");
+    let valid = true;
+
+    if (!name) {
+      setErrors((errors) => ({ ...errors, name: true }));
+      valid = false;
+    }
+
+    if (!amount || isNaN(amount)) {
+      setErrors((errors) => ({ ...errors, amount: true }));
+      valid = false;
+    }
+
+    if (valid) {
+      dispatch(addProduct({ id: Date.now(), name, amount }));
+      setName("");
+      setAmount("");
+      setErrors({ name: false, amount: false });
+    }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-6 m-4 rounded-md shadow-md"
+      className="bg-white p-6 m-4 rounded-md shadow-md flex flex-col items-center space-y-4"
     >
-      <div>
-        <label>
-          Product Name:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="ml-2 border rounded"
-          />
-        </label>
+      <div className="flex w-full items-center space-x-4">
+        <label className="flex-1 font-bold text-gray-700">Product Name:</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setErrors((errors) => ({ ...errors, name: false }));
+          }}
+          className={`flex-2 p-2 border rounded ${
+            errors.name ? "border-red-500" : ""
+          }`}
+        />
       </div>
-      <div className="mt-4">
-        <label>
-          Amount:
-          <input
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="ml-2 border rounded"
-          />
-        </label>
+      <div className="flex w-full items-center space-x-4">
+        <label className="flex-1 font-bold text-gray-700">Amount:</label>
+        <input
+          type="text"
+          value={amount}
+          onChange={(e) => {
+            setAmount(e.target.value);
+            setErrors((errors) => ({ ...errors, amount: false }));
+          }}
+          className={`flex-2 p-2 border rounded ${
+            errors.amount ? "border-red-500" : ""
+          }`}
+        />
       </div>
       <button
         type="submit"
-        className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        className="bg-blue-500 text-white font-bold py-2 px-4 rounded focus:ring-2 focus:ring-blue-600"
       >
         Add Product
       </button>

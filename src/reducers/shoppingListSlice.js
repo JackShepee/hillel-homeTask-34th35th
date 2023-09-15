@@ -1,8 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const initialState = JSON.parse(localStorage.getItem('shoppingList')) || [];
+
 export const shoppingListSlice = createSlice({
     name: 'shoppingList',
-    initialState: [],
+    initialState,
     reducers: {
         addProduct: (state, action) => {
             state.push(action.payload);
