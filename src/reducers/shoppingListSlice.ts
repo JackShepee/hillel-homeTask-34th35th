@@ -19,7 +19,9 @@ const shoppingListSlice = createSlice({
   initialState,
   reducers: {
     addProduct: (state, action: PayloadAction<Product>) => {
+      console.log(state)
       state.shoppingList.push(action.payload);
+      console.log(state);
     },
     editProduct: (state, action: PayloadAction<Product>) => {
       const index = state.shoppingList.findIndex((item) => item.id === action.payload.id);
