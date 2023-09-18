@@ -6,38 +6,57 @@ import {
   deleteProduct,
 } from "../reducers/shoppingListSlice";
 
-function ShoppingList() {
+interface Product {
+  id: number;
+  name: string;
+  amount: number;
+}
+
+const ShoppingList: React.FC = () => {
   const shoppingList = useSelector(selectShoppingList);
   const dispatch = useDispatch();
 
-  const [editingId, setEditingId] = useState(null);
-  const [editedValues, setEditedValues] = useState({ name: "", amount: "" });
-  const [errors, setErrors] = useState({ name: false, amount: false });
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editedValues, setEditedValues] = useState<{ name: string; amount: string }>({
+    name: "",
+    amount: "",
+  });
+  const [errors, setErrors] = useState<{ name: boolean; amount: boolean }>({
+    name: false,
+    amount: false,
+  });
 
-  const handleEdit = (id, name, amount) => {
+  const handleEdit = (id: number, name: string, amount: number) => {
     setEditingId(id);
-    setEditedValues({ name, amount });
+    setEditedValues({ name, amount: amount.toString() });
   };
-
-  const handleSave = (id) => {
+  
+  const handleSave = (id: number) => {
     let valid = true;
-
+  
     if (!editedValues.name) {
       setErrors((errors) => ({ ...errors, name: true }));
       valid = false;
     }
-
-    if (!editedValues.amount || isNaN(editedValues.amount)) {
+  
+    if (!editedValues.amount || isNaN(Number(editedValues.amount))) {
       setErrors((errors) => ({ ...errors, amount: true }));
       valid = false;
     }
-
+  
     if (valid) {
-      dispatch(editProduct({ id, ...editedValues }));
+      dispatch(
+        editProduct({
+          id,
+          name: editedValues.name,
+          amount: Number(editedValues.amount),
+        })
+      );
       setEditingId(null);
       setErrors({ name: false, amount: false });
     }
   };
+  
 
   return (
     <div className="m-4 p-6 bg-white rounded-md shadow-md">

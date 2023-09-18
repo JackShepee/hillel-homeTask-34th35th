@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addProduct } from "../reducers/shoppingListSlice";
 
-function Form() {
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState("");
-  const [errors, setErrors] = useState({ name: false, amount: false });
+const Form: React.FC = () => {
+  const [name, setName] = useState<string>("");
+  const [amount, setAmount] = useState<string>("");
+  const [errors, setErrors] = useState<{ name: boolean; amount: boolean }>({
+    name: false,
+    amount: false,
+  });
+
   const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     let valid = true;
 
@@ -17,13 +21,13 @@ function Form() {
       valid = false;
     }
 
-    if (!amount || isNaN(amount)) {
+    if (!amount || isNaN(Number(amount))) {
       setErrors((errors) => ({ ...errors, amount: true }));
       valid = false;
     }
 
     if (valid) {
-      dispatch(addProduct({ id: Date.now(), name, amount }));
+      dispatch(addProduct({ id: Date.now(), name, amount: Number(amount) }));
       setName("");
       setAmount("");
       setErrors({ name: false, amount: false });
