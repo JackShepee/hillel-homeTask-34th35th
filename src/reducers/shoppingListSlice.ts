@@ -35,6 +35,6 @@ const shoppingListSlice = createSlice({
 
 export const { addProduct, editProduct, deleteProduct } = shoppingListSlice.actions;
 
-export const selectShoppingList = (state: { shoppingList: ShoppingListState }): Product[] => state.shoppingList.shoppingList;
+export const selectShoppingList = (state: { shoppingList: ShoppingListState }): Product[] => state.shoppingList.shoppingList || [];
 
 export default shoppingListSlice.reducer;
